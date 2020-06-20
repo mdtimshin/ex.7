@@ -69,53 +69,74 @@ namespace ex._7
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Введите количество символов во входном алфавите");
-            int kolSymbol = int.Parse(Console.ReadLine());
-            for (int i = 0; i < kolSymbol; i++)
+            try
             {
-                Console.WriteLine("Введите символ");
-                char symbol = char.Parse(Console.ReadLine());
-                Console.WriteLine("Введите частоту");
-                int frequency = int.Parse(Console.ReadLine());
-                freqs.Add(symbol, frequency);
-            }
-            foreach (KeyValuePair<char, int> Pair in freqs)
-            {
-                source.Add(new huffmannTreeNode(Pair.Key.ToString(), "", Pair.Value));
-                tree.Add(new huffmannTreeNode(Pair.Key.ToString(), "", Pair.Value));
-                newRes.Add(new huffmannTreeNode(Pair.Key.ToString(), "", Pair.Value));
-            }
-
-            while (tree.Count > 1)
-            {
-                sortTree();
-
-                for (int index = 0; index < source.Count; index++)
+                Console.WriteLine("Введите количество символов во входном алфавите");
+                int kolSymbol = int.Parse(Console.ReadLine());
+                for (int i = 0; i < kolSymbol; i++)
                 {
-                    if (tree[tree.Count - 2].text.Contains(source[index].text))
-                    {
-                        newRes[index] = new huffmannTreeNode(newRes[index].text, "0" + newRes[index].code, newRes[index].frequency);
-                    }
-                    else if (tree[tree.Count - 1].text.Contains(source[index].text))
-                    {
-                        newRes[index] = new huffmannTreeNode(newRes[index].text, "1" + newRes[index].code, newRes[index].frequency);
-                    }
+                    Console.WriteLine("Введите символ");
+                    char symbol = char.Parse(Console.ReadLine());
+                    Console.WriteLine("Введите частоту");
+                    int frequency = int.Parse(Console.ReadLine());
+                    freqs.Add(symbol, frequency);
+                }
+                foreach (KeyValuePair<char, int> Pair in freqs)
+                {
+                    source.Add(new huffmannTreeNode(Pair.Key.ToString(), "", Pair.Value));
+                    tree.Add(new huffmannTreeNode(Pair.Key.ToString(), "", Pair.Value));
+                    newRes.Add(new huffmannTreeNode(Pair.Key.ToString(), "", Pair.Value));
                 }
 
-                tree[tree.Count - 2] = new huffmannTreeNode(tree[tree.Count - 2].text + tree[tree.Count - 1].text, "",
-                    tree[tree.Count - 2].frequency + tree[tree.Count - 1].frequency);
-                tree.RemoveAt(tree.Count - 1);
-            }
-            SortedDictionary<string, string> codes = new SortedDictionary<string, string>();
-            for (int index = 0; index < source.Count; index++)
-            {
-                codes.Add(newRes[index].code, newRes[index].text);
-            }
-            foreach (KeyValuePair<string, string> keyValue in codes)
-            {
-                Console.WriteLine(keyValue.Value + " (" + keyValue.Key + ")");
-            }
+                while (tree.Count > 1)
+                {
+                    sortTree();
 
+                    for (int index = 0; index < source.Count; index++)
+                    {
+                        if (tree[tree.Count - 2].text.Contains(source[index].text))
+                        {
+                            newRes[index] = new huffmannTreeNode(newRes[index].text, "0" + newRes[index].code, newRes[index].frequency);
+                        }
+                        else if (tree[tree.Count - 1].text.Contains(source[index].text))
+                        {
+                            newRes[index] = new huffmannTreeNode(newRes[index].text, "1" + newRes[index].code, newRes[index].frequency);
+                        }
+                    }
+
+                    tree[tree.Count - 2] = new huffmannTreeNode(tree[tree.Count - 2].text + tree[tree.Count - 1].text, "",
+                        tree[tree.Count - 2].frequency + tree[tree.Count - 1].frequency);
+                    tree.RemoveAt(tree.Count - 1);
+                }
+                SortedDictionary<string, string> codes = new SortedDictionary<string, string>();
+                for (int index = 0; index < source.Count; index++)
+                {
+                    codes.Add(newRes[index].code, newRes[index].text);
+                }
+                Console.WriteLine("Список кодовых слов:");
+                if (codes.Count > 1)
+                {
+                    foreach (KeyValuePair<string, string> keyValue in codes)
+                    {
+                        Console.WriteLine(keyValue.Value + " (" + keyValue.Key + ")");
+                    }
+                }
+                else
+                {
+                    foreach (KeyValuePair<string, string> keyValue in codes)
+                    {
+                        Console.WriteLine(keyValue.Value + " ( 0 )");
+                    }
+                }
+            }
+            catch (System.ArgumentException)
+            {
+                Console.WriteLine("Вы уже добавили этот символ. Завершение работы программы");
+            }
+            catch (System.FormatException)
+            {
+                Console.WriteLine("Вы ввели не символ. Завершение работы программы");
+            }
             Console.ReadKey();
 
 
